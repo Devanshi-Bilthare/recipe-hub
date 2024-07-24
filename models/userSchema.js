@@ -34,7 +34,11 @@ const userSchema = new mongoose.Schema({
     follower:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
-    }]
+    }],
+    resetPasswordToken:{
+        type:Number,
+        default:0
+    }
 })
 
 userSchema.plugin(plm)

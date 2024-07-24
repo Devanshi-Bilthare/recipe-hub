@@ -1,3 +1,4 @@
+require('dotenv').config('./.env')
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -27,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   saveUninitialized:true,
   resave:true,
-  secret:'qwertyu'
+  secret:process.env.SESSION_SECRET
 }))
 
 app.use(passport.initialize())

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost:27017/recepie-management')
+mongoose.connect(process.env.MONGO_PORT)
 .then(() => console.log('database connected'))
 .catch(err => console.log(err))

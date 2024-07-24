@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 
 const User = require('../models/userSchema')
+const sendMail = require('../utils/mail')
 
 const {isLoggedIn} =require('../utils/auth')
 const upload = require('../utils/multer').single('profilepic')
@@ -136,5 +137,43 @@ router.get('/follow/:id',async(req,res)=>{
   }
 })
 
+router.get('/confirm-email',(req,res)=>{
+  res.render('confirm-email')
+})
+
+router.post('/confirm-email',async(req,res)=>{
+  try{
+    const user =await User.findOne({email : req.body.email})
+    if(user){
+      sendMail(res,user)
+    }else{
+      res.redirect('/users/confirm-email')
+    }
+  }catch(err){
+    res.send(err)
+  }
+})
+
+router.get('/forget-password/:id',(req,res)=>{
+  res.render('forget-password',{id:req.params.id})
+})
+
+router.post('/forget-password/:id',async(req,res)=>{
+  try{
+    const {id} = req.params
+    const user = await User.findById(id)
+    if(user.resetPasswordToken == 1){
+      await user.setPassword(req.body.password)
+      user.resetPasswordToken=0
+      await user.save()
+    }else{
+      res.send('link expired')
+    }
+
+    res.redirect('/users/login')
+  }catch(err){
+    res.send(err)
+  }
+})
 
 module.exports = router;
